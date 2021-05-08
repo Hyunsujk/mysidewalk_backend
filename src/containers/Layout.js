@@ -14,6 +14,7 @@ const useStyles = makeStyles({
 const Layout = () => {
   const { input, customButton } = useStyles();
   const [file, setFile] = useState(null);
+  const [arrOfStrings, setArrOfStrings] = useState([]);
 
   const handleUploadedFile = (e) => {
     console.log("handle", e.target);
@@ -35,10 +36,12 @@ const Layout = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = reader.result;
+        setArrOfStrings(content.split(/\r\n|\n/));
         console.log(content);
       };
       reader.readAsText(file);
     }
+    console.log("lines-----", arrOfStrings);
     // const uploadedFile = new FormData();
     // uploadedFile.append("file", file);
     // console.log(Array.from(uploadedFile));
