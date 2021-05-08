@@ -1,29 +1,29 @@
 import { useState } from "react";
-import { Button, makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Grid, Typography, Box } from "@material-ui/core";
 
 const useStyles = makeStyles({
-  hiddens: {
+  input: {
     display: "none",
   },
   customFilledButton: {
     backgroundColor: "#05677e",
     color: "#fff",
   },
-  customOutlinedButton: {
-    color: "#05677e",
-  },
 });
 
 const Layout = () => {
-  const { hidden, customFilledButton, customOutlinedButton } = useStyles();
-  const [arrOfStrings, setArrOfStrings] = useState([]);
+  const { input, customFilledButton } = useStyles();
+  const [arrOfUploadedStrings, setArrOfUploadedStrings] = useState([]);
+  const [isFileUploaded, setIsFileUploaded] = useState(false);
+  const [fileName, setFileName] = useState("");
   let stringsStartWithNum = [];
   let stringsWithoutNum = [];
   let combinedSortedArr = [];
   let outputData = "";
 
-  const handleUploadedFile = (e) => {
+  const handleChooseFileClick = (e) => {
     const uploadedFile = e.target.files[0];
+    setFileName(uploadedFile.name.replace(".txt", ""));
     parseDataFromUploadedFile(uploadedFile);
   };
 
@@ -33,15 +33,21 @@ const Layout = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = reader.result;
-        setArrOfStrings(content.split(/\r\n|\n/));
+        setArrOfUploadedStrings(content.split(/\r\n|\n/));
       };
       reader.readAsText(file);
+      setIsFileUploaded(true);
     }
+  };
+
+  const handleSortDownloadClick = () => {
+    sortData();
+    handleDownload();
   };
 
   const sortData = () => {
     const regexStringStartsWithNumber = /^\d+/;
-    arrOfStrings.forEach((string) => {
+    arrOfUploadedStrings.forEach((string) => {
       if (string.match(regexStringStartsWithNumber)) {
         stringsStartWithNum.push(string);
       } else {
@@ -60,6 +66,7 @@ const Layout = () => {
       ...sortedstringsStartWithNumArray,
       ...sortedStringsWithoutNumArray,
     ];
+
     combinedSortedArr.forEach((string) => (outputData += `${string}\n`));
   };
 
@@ -67,46 +74,54 @@ const Layout = () => {
     const element = document.createElement("a");
     const blob = new Blob([outputData], { type: "text/plain" });
     element.href = URL.createObjectURL(blob);
-    element.download = "sorted.txt";
+    element.download = `sorted-${fileName}.txt`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
+    setIsFileUploaded(false);
   };
 
   return (
-    <>
-      <input
-        accept=".txt"
-        id="file-input"
-        type="file"
-        className={hidden}
-        onChange={handleUploadedFile}
-      />
-      <label htmlFor="file-input">
-        <Button
-          variant="contained"
-          className={customFilledButton}
-          component="span"
-        >
-          choose file
-        </Button>
-      </label>
-
-      <Button
-        variant="outlined"
-        className={customOutlinedButton}
-        onClick={sortData}
+    <Box m="40px">
+      <Grid
+        container
+        direction="column"
+        justify="center"
+        alignItems="flex-start"
+        spacing={3}
       >
-        sort the text file
-      </Button>
-
-      <Button
-        variant="contained"
-        className={customFilledButton}
-        onClick={handleDownload}
-      >
-        download sorted text file
-      </Button>
-    </>
+        <Grid item>
+          <Typography variant="h4">mySidewalk Backend Challenge</Typography>
+        </Grid>
+        <Grid item>
+          <input
+            accept=".txt"
+            id="file-input"
+            type="file"
+            className={input}
+            onChange={handleChooseFileClick}
+          />
+          <label htmlFor="file-input">
+            <Button
+              variant="contained"
+              className={customFilledButton}
+              component="span"
+            >
+              choose file
+            </Button>
+          </label>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            className={customFilledButton}
+            onClick={handleSortDownloadClick}
+            disabled={!isFileUploaded}
+          >
+            sort the data &amp; download
+          </Button>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
