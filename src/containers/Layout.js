@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -23,6 +23,24 @@ const Layout = () => {
     setFile(e.target.files[0]);
   };
 
+  useEffect(() => {
+    const textType = /text.*/;
+    if (file && file.type.match(textType)) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = reader.result;
+        console.log(content);
+      };
+      reader.readAsText(file);
+    }
+  }, [file]);
+
+  const handleFileUpload = () => {
+    const uploadedFile = new FormData();
+    uploadedFile.append("file", file);
+    console.log(Array.from(uploadedFile));
+  };
+
   return (
     <>
       <input
@@ -37,6 +55,14 @@ const Layout = () => {
           Choose File
         </Button>
       </label>
+
+      <Button
+        variant="outlined"
+        className={customButton}
+        onClick={handleFileUpload}
+      >
+        Upload
+      </Button>
     </>
   );
 };
