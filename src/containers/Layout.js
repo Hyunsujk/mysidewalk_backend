@@ -24,8 +24,14 @@ const Layout = () => {
   };
 
   useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+  const handleFileUpload = (file) => {
     const textType = /text.*/;
-    if (file && file.type.match(textType)) {
+    if (file.type.match(textType)) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = reader.result;
@@ -33,12 +39,9 @@ const Layout = () => {
       };
       reader.readAsText(file);
     }
-  }, [file]);
-
-  const handleFileUpload = () => {
-    const uploadedFile = new FormData();
-    uploadedFile.append("file", file);
-    console.log(Array.from(uploadedFile));
+    // const uploadedFile = new FormData();
+    // uploadedFile.append("file", file);
+    // console.log(Array.from(uploadedFile));
   };
 
   return (
