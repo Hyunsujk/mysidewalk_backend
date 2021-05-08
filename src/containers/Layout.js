@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button, makeStyles, Grid, Typography, Box } from "@material-ui/core";
+import sortData from "../utils/sortData";
 
 const useStyles = makeStyles({
   input: {
@@ -16,10 +17,6 @@ const Layout = () => {
   const [arrOfUploadedStrings, setArrOfUploadedStrings] = useState([]);
   const [isFileUploaded, setIsFileUploaded] = useState(false);
   const [fileName, setFileName] = useState("");
-  let stringsStartWithNum = [];
-  let stringsWithoutNum = [];
-  let combinedSortedArr = [];
-  let outputData = "";
 
   const handleChooseFileClick = (e) => {
     const uploadedFile = e.target.files[0];
@@ -41,38 +38,13 @@ const Layout = () => {
   };
 
   const handleSortDownloadClick = () => {
-    sortData();
-    handleDownload();
+    const sortedData = sortData(arrOfUploadedStrings);
+    handleDownload(sortedData);
   };
 
-  const sortData = () => {
-    const regexStringStartsWithNumber = /^\d+/;
-    arrOfUploadedStrings.forEach((string) => {
-      if (string.match(regexStringStartsWithNumber)) {
-        stringsStartWithNum.push(string);
-      } else {
-        stringsWithoutNum.push(string);
-      }
-    });
-    const collator = new Intl.Collator(undefined, {
-      numeric: true,
-      sensitivity: "base",
-    });
-    const sortedstringsStartWithNumArray = stringsStartWithNum.sort(
-      collator.compare
-    );
-    const sortedStringsWithoutNumArray = stringsWithoutNum.sort();
-    combinedSortedArr = [
-      ...sortedstringsStartWithNumArray,
-      ...sortedStringsWithoutNumArray,
-    ];
-
-    combinedSortedArr.forEach((string) => (outputData += `${string}\n`));
-  };
-
-  const handleDownload = () => {
+  const handleDownload = (sortedData) => {
     const element = document.createElement("a");
-    const blob = new Blob([outputData], { type: "text/plain" });
+    const blob = new Blob([sortedData], { type: "text/plain" });
     element.href = URL.createObjectURL(blob);
     element.download = `sorted-${fileName}.txt`;
     document.body.appendChild(element); // Required for this to work in FireFox
