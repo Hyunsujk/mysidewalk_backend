@@ -17,6 +17,11 @@ describe("Sort data function", () => {
     "3kings",
     "3 kettles",
   ];
+  const arrayOfStringsWithNumBeforeAndAfterWord = [
+    "3 apt 4",
+    "4 apt 3",
+    "4 dog5",
+  ];
 
   it("should resolve array of string starts with number only", () => {
     const result = sortData(arrayOfNumStartStringOnly);
@@ -45,5 +50,9 @@ describe("Sort data function", () => {
   it("should resolve array of number strings and be case insensitive", () => {
     const result = sortData(arrayOfNumStringCaseInsensitive);
     expect(result).toStrictEqual(`3 kettles\n3Kids\n3kings\n3 Kites\n`);
+  });
+  it("should resolve array of strings with word inbetween numbers", () => {
+    const result = sortData(arrayOfStringsWithNumBeforeAndAfterWord);
+    expect(result).toStrictEqual(`3 apt 4\n4 apt 3\n4 dog5\n`);
   });
 });
