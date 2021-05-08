@@ -16,6 +16,7 @@ const sortData = (arrOfUploadedStrings) => {
     const collator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: "base",
+      ignorePunctuation: true,
     });
     const sortedstringsStartWithNumArray = stringsStartWithNum.sort(
       collator.compare
