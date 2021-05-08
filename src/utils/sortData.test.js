@@ -11,6 +11,12 @@ describe("Sort data function", () => {
   const arrayOfNumAndNoNumStrings = ["4 doors", "cookies", "55 cars", "cat"];
   const arrayOfSameNumDiffWords = ["5 cars", "5 pens", "5 dogs"];
   const arrayOfNoNumStringsOnly = ["pillow", "bike", "tree"];
+  const arrayOfNumStringCaseInsensitive = [
+    "3 Kites",
+    "3Kids",
+    "3kings",
+    "3 kettles",
+  ];
 
   it("should resolve array of string starts with number only", () => {
     const result = sortData(arrayOfNumStartStringOnly);
@@ -35,5 +41,9 @@ describe("Sort data function", () => {
   it("should resolve array of no number strings only", () => {
     const result = sortData(arrayOfNoNumStringsOnly);
     expect(result).toStrictEqual(`bike\npillow\ntree\n`);
+  });
+  it("should resolve array of number strings and be case insensitive", () => {
+    const result = sortData(arrayOfNumStringCaseInsensitive);
+    expect(result).toStrictEqual(`3 kettles\n3Kids\n3kings\n3 Kites\n`);
   });
 });
