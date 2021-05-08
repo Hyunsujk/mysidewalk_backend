@@ -13,7 +13,7 @@ const useStyles = makeStyles({
 
 const Layout = () => {
   const { input, customButton } = useStyles();
-  const [arrOfStrings, setArrOfStrings] = useState([]);
+  const [arrOfUnsortedStrings, setArrOfUnsortedStrings] = useState([]);
 
   const handleUploadedFile = (e) => {
     const uploadedFile = e.target.files[0];
@@ -26,13 +26,12 @@ const Layout = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = reader.result;
-        const ArrOfUnsortedStrings = content.split(/\r\n|\n/);
-        setArrOfStrings(ArrOfUnsortedStrings.sort());
+        setArrOfUnsortedStrings(content.split(/\r\n|\n/));
       };
       reader.readAsText(file);
     }
   };
-  console.log(arrOfStrings);
+  console.log(arrOfUnsortedStrings);
 
   return (
     <>
