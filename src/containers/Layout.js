@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -13,39 +13,26 @@ const useStyles = makeStyles({
 
 const Layout = () => {
   const { input, customButton } = useStyles();
-  const [file, setFile] = useState(null);
   const [arrOfStrings, setArrOfStrings] = useState([]);
 
   const handleUploadedFile = (e) => {
-    console.log("handle", e.target);
-
-    console.log("uploaded file", e.target.files[0]);
-
-    setFile(e.target.files[0]);
+    const uploadedFile = e.target.files[0];
+    handleDataFromUploadedFile(uploadedFile);
   };
 
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-  }, [file]);
-
-  const handleFileUpload = (file) => {
+  const handleDataFromUploadedFile = (file) => {
     const textType = /text.*/;
-    if (file.type.match(textType)) {
+    if (file && file.type.match(textType)) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = reader.result;
-        setArrOfStrings(content.split(/\r\n|\n/));
-        console.log(content);
+        const ArrOfUnsortedStrings = content.split(/\r\n|\n/);
+        setArrOfStrings(ArrOfUnsortedStrings.sort());
       };
       reader.readAsText(file);
     }
-    console.log("lines-----", arrOfStrings);
-    // const uploadedFile = new FormData();
-    // uploadedFile.append("file", file);
-    // console.log(Array.from(uploadedFile));
   };
+  console.log(arrOfStrings);
 
   return (
     <>
@@ -62,11 +49,7 @@ const Layout = () => {
         </Button>
       </label>
 
-      <Button
-        variant="outlined"
-        className={customButton}
-        onClick={handleFileUpload}
-      >
+      <Button variant="outlined" className={customButton}>
         Upload
       </Button>
     </>
